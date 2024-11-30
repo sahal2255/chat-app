@@ -36,7 +36,11 @@ const Login = () => {
 
   const handleLogin = (data) => {
     console.log("Login Data", data);
-    login(data)
+    try {
+      login(data)
+    } catch (error) {
+      console.log('error in the login',error)
+    }
   };
 
   return (
