@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { FaEdit } from "react-icons/fa";
+import { AiOutlineLoading3Quarters } from "react-icons/ai"; // Loading spinner icon
 import { useAuthStore } from "../store/useAuthStore";
 
 const ProfilePage = () => {
-  const { authUser, updateProfilePic } = useAuthStore();
+  const { authUser, updateProfilePic, isUpdatingProfile } = useAuthStore();
   const [preview, setPreview] = useState(authUser.profilePic);
 
   const handleFileChange = async (e) => {
@@ -11,7 +12,7 @@ const ProfilePage = () => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setPreview(reader.result);
+        setPreview(reader.result); // Show preview immediately
       };
       reader.readAsDataURL(file);
       reader.onload = async () => {
@@ -36,11 +37,20 @@ const ProfilePage = () => {
           {/* Avatar Section */}
           <div className="flex flex-col items-center mb-6">
             <div className="relative">
-              <img
-                src={preview || "https://via.placeholder.com/150?text=No+Avatar"}
-                alt="Avatar"
-                className="w-32 h-32 rounded-full border-4 border-indigo-600 shadow-lg"
-              />
+              <div className="w-32 h-32 rounded-full border-4  shadow-lg flex items-center justify-center overflow-hidden bg-gray-100">
+                {isUpdatingProfile ? (
+                  <AiOutlineLoading3Quarters
+                    className="animate-spin"
+                    size={32}
+                  />
+                ) : (
+                  <img
+                    src={preview || "https://via.placeholder.com/150?text=No+Avatar"}
+                    alt="Avatar"
+                    className="w-full h-full object-cover"
+                  />
+                )}
+              </div>
               <label
                 htmlFor="avatarInput"
                 className="absolute bottom-0 right-0 bg-indigo-600 text-white p-2 rounded-full cursor-pointer shadow-md hover:bg-indigo-700"
