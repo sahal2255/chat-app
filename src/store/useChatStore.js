@@ -43,7 +43,7 @@ const useChatStore=create((set,get)=>({
             toast.error(error.response.data.message)
         }
     },
-    oneToOneMessages:async()=>{
+    onMessages:async()=>{
         const {selectedUser}=get()
         if(!selectedUser) return
         const socket=useAuthStore.getState().socket
@@ -54,7 +54,10 @@ const useChatStore=create((set,get)=>({
             })
         })
     },
-    
+    offMessages:async()=>{
+        const socket=useAuthStore.getState().socket
+        socket.off('newMessage')
+    },
     setSelectedUser:(selectedUser)=>set({selectedUser }),
 }))
 export default useChatStore
