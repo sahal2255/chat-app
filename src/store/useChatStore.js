@@ -1,7 +1,8 @@
 import { create } from "zustand";
 import axiosInstance from "../lib/axios";
 import toast from "react-hot-toast";
-const useChatStore=create((set,getState)=>({
+import { useAuthStore } from "./useAuthStore";
+const useChatStore=create((set,get)=>({
     messages:[],
     users:[],
     selectedUser:null,
@@ -34,7 +35,7 @@ const useChatStore=create((set,getState)=>({
         }
     },
     sendMessage:async(messageData)=>{
-        const {selectedUser,messages}=getState()
+        const {selectedUser,messages}=get()
         try {
             const res=await axiosInstance.post(`/messages/send/${selectedUser._id}`,messageData)
             set({messages:[...messages,res.data]})
@@ -42,6 +43,18 @@ const useChatStore=create((set,getState)=>({
             toast.error(error.response.data.message)
         }
     },
+    oneToOneMessages:async()=>{
+        const {selectedUser}=get()
+        if(!selectedUser) return
+        const socket=useAuthStore.getState().socket
+
+        socket.on('newMessage',(newMessage)=>{
+            set({
+                messages:[...get().messages,newMessage]
+            })
+        })
+    },
+    
     setSelectedUser:(selectedUser)=>set({selectedUser }),
 }))
 export default useChatStore

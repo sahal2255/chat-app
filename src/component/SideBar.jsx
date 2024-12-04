@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
 import useChatStore from "../store/useChatStore";
 import { ImSpinner8 } from "react-icons/im";
+import { useAuthStore } from "../store/useAuthStore";
 
 const SideBar = () => {
   const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading } = useChatStore();
+  const { onlineUsers } = useAuthStore();
 
   useEffect(() => {
     getUsers();
@@ -17,6 +19,8 @@ const SideBar = () => {
     );
   }
 
+  const isUserOnline = (userId) => onlineUsers.includes(userId);
+
   return (
     <div className="w-64 bg-gray-700 shadow-lg border-r border-gray-200 flex flex-col h-full">
       <div className="flex-1 overflow-y-auto">
@@ -29,7 +33,7 @@ const SideBar = () => {
                 selectedUser?._id === user._id ? "bg-gray-500" : ""
               }`}
             >
-              <div className="flex-shrink-0">
+              <div className="relative flex-shrink-0">
                 {user.profilePic ? (
                   <img
                     src={user.profilePic}
@@ -41,6 +45,9 @@ const SideBar = () => {
                     {user.fullName ? user.fullName[0].toUpperCase() : "?"}
                   </div>
                 )}
+                {isUserOnline(user._id) && (
+                  <span className="absolute bottom-0 right-0 h-3 w-3 bg-green-500 rounded-full border-2 border-gray-700"></span>
+                )}
               </div>
               <div className="ml-3 flex-1">
                 <p className="font-medium text-white">{user.fullName || "Unknown User"}</p>
@@ -51,8 +58,6 @@ const SideBar = () => {
           <p className="text-gray-500 text-center p-4">No users online</p>
         )}
       </div>
-
-      
     </div>
   );
 };

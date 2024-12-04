@@ -9,8 +9,8 @@ import { useAuthStore } from '../store/useAuthStore'
 import { BiLoader } from 'react-icons/bi'
 import { Toaster } from 'react-hot-toast'
 const Router = () => {
-const {authUser,checkAuth,isCheckingAuth}=useAuthStore()
-
+const {authUser,checkAuth,isCheckingAuth,onlineUsers}=useAuthStore()
+console.log('online user in the ',onlineUsers)
 useEffect(()=>{
   checkAuth()
 },[checkAuth])
